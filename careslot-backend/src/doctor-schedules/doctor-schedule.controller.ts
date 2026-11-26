@@ -8,22 +8,36 @@ import {
   Body,
   Query,
   ParseIntPipe,
+  BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard'; // palitan ang path kung iba ang location ng guard mo
 import { DoctorSchedulesService } from './doctor-schedule.services';
 import { DoctorSchedule } from './doctor-schedule.entity';
 
+@UseGuards(JwtAuthGuard)
 @Controller('schedules')
 export class DoctorSchedulesController {
   constructor(private readonly schedulesService: DoctorSchedulesService) {}
 
   @Post()
   create(@Body() body: Partial<DoctorSchedule>) {
+    if (!body || Object.keys(body).length === 0) {
+      throw new BadRequestException('Request body is required to create a schedule.');
+    }
     return this.schedulesService.create(body);
   }
 
   @Get()
   findAll(@Query('doctorId') doctorId?: string) {
-    return this.schedulesService.findAll(doctorId ? Number(doctorId) : undefined);
+    if (doctorId !== undefined && doctorId !== '') {
+      const parsedDoctorId = Number(doctorId);
+      if (Number.isNaN(parsedDoctorId)) {
+        throw new BadRequestException('doctorId query parameter must be a valid number.');
+      }
+      return this.schedulesService.findAll(parsedDoctorId);
+    }
+    return this.schedulesService.findAll(undefined);
   }
 
   @Get(':id')
@@ -36,6 +50,9 @@ export class DoctorSchedulesController {
     @Param('id', ParseIntPipe) id: number,
     @Body() body: Partial<DoctorSchedule>,
   ) {
+    if (!body || Object.keys(body).length === 0) {
+      throw new BadRequestException('Update payload cannot be empty.');
+    }
     return this.schedulesService.update(id, body);
   }
 
