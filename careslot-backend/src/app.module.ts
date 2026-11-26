@@ -6,6 +6,9 @@ import { AuthModule } from './auth/auth.module';
 import { DoctorsModule } from './doctors/doctors.module';
 import { ServicesModule } from './services/services.module';
 import { AppointmentsModule } from './appointments/appointments.module';
+import { DoctorSchedulesModule } from './doctor-schedules/doctor-schedule.module';
+import { MedicalFilesModule } from './Medical-Files/medical-file.module';
+import { NotificationsModule } from './notifications/notification.module';
 
 @Module({
   imports: [
@@ -26,6 +29,9 @@ import { AppointmentsModule } from './appointments/appointments.module';
     DoctorsModule,
     ServicesModule,
     AppointmentsModule,
+    DoctorSchedulesModule,
+    MedicalFilesModule,
+    NotificationsModule,
   ],
 })
 export class AppModule {}

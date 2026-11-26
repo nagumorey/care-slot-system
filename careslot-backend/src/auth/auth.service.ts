@@ -29,10 +29,12 @@ export class AuthService {
 
   async login(body: any) {
     const user = await this.usersService.findByEmail(body.email);
-    if (!user) throw new UnauthorizedException('Invalid credentials');
+    // Pinalitan natin ng generic message
+    if (!user) throw new UnauthorizedException('Invalid email or password');
 
     const isMatch = await bcrypt.compare(body.password, user.password_hash);
-    if (!isMatch) throw new UnauthorizedException('Invalid credentials');
+    // Pinalitan natin ng generic message
+    if (!isMatch) throw new UnauthorizedException('Invalid email or password');
 
     const token = this.jwtService.sign({ id: user.id, email: user.email, role: user.role });
     return { message: 'Login successful', token, user: { id: user.id, email: user.email, role: user.role } };

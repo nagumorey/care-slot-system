@@ -1,9 +1,17 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  Unique,
+} from 'typeorm';
 import { User } from '../users/user.entity';
 import { Doctor } from '../doctors/doctor.entity';
 import { Service } from '../services/service.entity';
 
 @Entity('appointments')
+@Unique(['doctor_id', 'appointment_date', 'appointment_time'])
 export class Appointment {
   @PrimaryGeneratedColumn()
   id: number;

@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Service } from './service.entity';
+import { Service } from './service.entity'; // Dapat Service
 
 @Injectable()
-export class ServicesService {
+export class ServicesService { // Dapat ServicesService
   constructor(
     @InjectRepository(Service)
     private serviceRepo: Repository<Service>,
@@ -17,5 +17,23 @@ export class ServicesService {
 
   async findAll() {
     return await this.serviceRepo.find();
+  }
+
+  async findOne(id: number) {
+    const service = await this.serviceRepo.findOneBy({ id });
+    if (!service) {
+      throw new NotFoundException(`Service with ID ${id} not found`);
+    }
+    return service;
+  }
+
+  async update(id: number, data: Partial<Service>) {
+    await this.serviceRepo.update(id, data);
+    return this.serviceRepo.findOneBy({ id });
+  }
+
+  async remove(id: number) {
+    await this.serviceRepo.delete(id);
+    return { message: 'Service deleted successfully' };
   }
 }
